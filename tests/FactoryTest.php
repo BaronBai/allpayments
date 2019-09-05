@@ -17,7 +17,11 @@ class FactoryTest extends TestCase
 {
 
     public function testMakeWechat(){
-        $wechat = Factory::wechat();
+        $wechat = Factory::wechat([
+            'appid' => 'your app id',
+            'mch_id' => 'your mch id',
+            'key' => 'your key'
+        ]);
         $this->assertInstanceOf(WechatPay::class, $wechat);
     }
 }
