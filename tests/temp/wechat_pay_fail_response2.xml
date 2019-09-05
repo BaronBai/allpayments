@@ -1,0 +1,7 @@
+<xml>
+    <return_code><![CDATA[SUCCESS]]></return_code>
+    <return_msg><![CDATA[OK]]></return_msg>
+    <result_code><![CDATA[FAIL]]></result_code>
+    <err_code><![CDATA[10023]]></err_code>
+    <err_code_des><![CDATA[就是想让你错]]></err_code_des>
+</xml>

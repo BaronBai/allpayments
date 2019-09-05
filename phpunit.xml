@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="test.bootstrap.php">
+    <testsuites>
+        <testsuite name="Application Test Suite">
+            <directory>./tests/</directory>
+        </testsuite>
+    </testsuites>
+    <php>
+        <env name="JD_MCH_NO" value="10000100"/>
+        <env name="JD_DES_KEY" value="usIV/W1e2Z2rkvImxyXVvEA0FnySFT7m"/>
+        <env name="JD_MD5_KEY" value="aaaaa1cs13644lyybjb2v8d2kj82222"/>
+        <env name="JD_SYSTEM_ID" value="12312312"/>
+
+        <env name="WECHAT_MCH_NO" value="wx2421b1c4370ec43b"/>
+        <env name="WECHAT_APP_ID" value="10000100"/>
+        <env name="WECHAT_KEY" value="aaaaa1cs13644lyybjb2v8d2kj82222"/>
+        <env name="WECHAT_OPENID" value="asfarqwrqwr"/>
+    </php>
+</phpunit>
