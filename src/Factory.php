@@ -15,6 +15,7 @@ use Illuminate\Container\Container;
 use Mzt\AllPayments\Contracts\IServiceProvider;
 use Mzt\AllPayments\Contracts\IXml2Array;
 use Mzt\AllPayments\Http\BaseHttpClient;
+use Mzt\AllPayments\PayService\Pay;
 use Mzt\AllPayments\PayService\UnifiedOrderByWechat;
 use Mzt\AllPayments\PayService\WechatPay;
 use Mzt\AllPayments\Providers\HttpServiceProvider;
@@ -79,5 +80,18 @@ class Factory extends Container
 
         $wechat->unifiedOrder()->setConfig($config);
         return $wechat;
+    }
+
+
+    public static function jd(array $config){
+        $self = self::getInstance();
+
+        /**
+         * @var Pay $jd
+         */
+        $jd = $self->make('jd');
+
+        $jd->unifiedOrder()->setConfig($config);
+        return $jd;
     }
 }

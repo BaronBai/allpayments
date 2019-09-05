@@ -10,6 +10,7 @@ namespace Mzt\Tests;
 
 
 use Mzt\AllPayments\Factory;
+use Mzt\AllPayments\PayService\Pay;
 use Mzt\AllPayments\PayService\WechatPay;
 use PHPUnit\Framework\TestCase;
 
@@ -23,5 +24,16 @@ class FactoryTest extends TestCase
             'key' => 'your key'
         ]);
         $this->assertInstanceOf(WechatPay::class, $wechat);
+    }
+
+
+    public function testMakeJD(){
+        $jd = Factory::jd([
+            '3desKey' => 'your config',
+            'merchantNo' => 'your config',
+            'md5Key' => 'your config',
+            'systemId' => 'your config'
+        ]);
+        $this->assertInstanceOf(Pay::class, $jd);
     }
 }
