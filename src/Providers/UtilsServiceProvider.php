@@ -9,25 +9,28 @@
 namespace Mzt\AllPayments\Providers;
 
 
-use Mzt\AllPayments\Contracts\IServiceProvider;
+use League\Container\ServiceProvider\AbstractServiceProvider;
 use Mzt\AllPayments\Contracts\ISignUtil;
 use Mzt\AllPayments\Contracts\IXml2Array;
-use Mzt\AllPayments\Factory;
 use Mzt\AllPayments\Traits\Md5SignUtil;
+use Mzt\AllPayments\Utils\JDSignUtil;
 use Mzt\AllPayments\XmlArray;
 
-class UtilsServiceProvider implements IServiceProvider
+class UtilsServiceProvider extends AbstractServiceProvider
 {
 
-    public function register(Factory $app)
-    {
-        $app->bind(IXml2Array::class,XmlArray::class);
-        $app->bind('md5Sign',Md5SignUtil::class);
-        $app->bind(ISignUtil::class, Md5SignUtil::class);
-    }
+    protected $provides = [
+        IXml2Array::class,
+        ISignUtil::class,
+        Md5SignUtil::class,
+        JDSignUtil::class
+    ];
 
-    public function boot(Factory $app)
+    public function register()
     {
-        // TODO: Implement boot() method.
+        $this->getContainer()->add(IXml2Array::class, XmlArray::class);
+        $this->getContainer()->add(ISignUtil::class,Md5SignUtil::class);
+        $this->getContainer()->add(Md5SignUtil::class);
+        $this->getContainer()->add(JDSignUtil::class);
     }
 }

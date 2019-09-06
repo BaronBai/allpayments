@@ -9,56 +9,42 @@
 namespace Mzt\AllPayments\Providers;
 
 
+use League\Container\ServiceProvider\AbstractServiceProvider;
 use Mzt\AllPayments\Contracts\IHttpClient;
-use Mzt\AllPayments\Contracts\IServiceProvider;
 use Mzt\AllPayments\Factory;
 use Mzt\AllPayments\PayService\Notifys\PayNotifyByJD;
 use Mzt\AllPayments\PayService\Pay;
 use Mzt\AllPayments\PayService\UnifiedOrder\UnifiedOrderByJD;
 use Mzt\AllPayments\Utils\JDSignUtil;
 
-class JDPayServiceProvider implements IServiceProvider
+class JDPayServiceProvider extends AbstractServiceProvider
 {
 
-    public function boot(Factory $app)
-    {
+    protected $provides = [
+        'jd_pay',
+        UnifiedOrderByJD::class,
+        PayNotifyByJD::class
+    ];
 
-        $callble = function ($app) {
-            $service = new Pay(
-                $app->make(UnifiedOrderByJD::class),
-                $app->make(PayNotifyByJD::class)
-            );
-
-            return $service;
-        };
-        $app->bind('jd',$callble);
-    }
-
-    public function register(Factory $app)
+    public function register()
     {
         /**
          * 注册京东支付（统一下单）
          */
-        $callable = function($app){
-            $service = new UnifiedOrderByJD(
-                $app->make(IHttpClient::class),
-                $app->make(JDSignUtil::class)
-            );
-
-            return $service;
-        };
-        $app->bind(UnifiedOrderByJD::class,$callable);
+        $this->getLeagueContainer()->add(UnifiedOrderByJD::class)
+            ->addArgument(IHttpClient::class)
+            ->addArgument(JDSignUtil::class);
 
 
         /**
          * 注册微信支付通知处理类
          */
-        $app->bind(PayNotifyByJD::class,function($app){
-            $notify = new PayNotifyByJD(
-                $app->make(JDSignUtil::class)
-            );
+        $this->getLeagueContainer()->add(PayNotifyByJD::class)
+            ->addArgument(JDSignUtil::class);
 
-            return $notify;
-        });
+
+        $this->getLeagueContainer()->add('jd_pay',Pay::class)
+            ->addArgument(UnifiedOrderByJD::class)
+            ->addArgument(PayNotifyByJD::class);
     }
 }

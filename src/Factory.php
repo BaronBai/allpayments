@@ -9,60 +9,42 @@
 namespace Mzt\AllPayments;
 
 
-use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
-use Illuminate\Container\Container;
-use Mzt\AllPayments\Contracts\IServiceProvider;
-use Mzt\AllPayments\Contracts\IXml2Array;
-use Mzt\AllPayments\Http\BaseHttpClient;
+use League\Container\Container;
+use League\Container\Definition\DefinitionAggregateInterface;
+use League\Container\Inflector\InflectorAggregateInterface;
+use League\Container\ServiceProvider\ServiceProviderAggregateInterface;
 use Mzt\AllPayments\PayService\Pay;
-use Mzt\AllPayments\PayService\UnifiedOrderByWechat;
 use Mzt\AllPayments\PayService\WechatPay;
 use Mzt\AllPayments\Providers\HttpServiceProvider;
 use Mzt\AllPayments\Providers\JDPayServiceProvider;
 use Mzt\AllPayments\Providers\UtilsServiceProvider;
 use Mzt\AllPayments\Providers\WechatPayServiceProvider;
-use Mzt\AllPayments\Traits\Md5SignUtil;
 
 class Factory extends Container
 {
 
-    protected $providers = [
-        WechatPayServiceProvider::class,
+    protected $serviceProviders = [
         UtilsServiceProvider::class,
         HttpServiceProvider::class,
+        WechatPayServiceProvider::class,
         JDPayServiceProvider::class
     ];
 
-
-    protected function __construct()
-    {
+    public function __construct(
+        ?DefinitionAggregateInterface $definitions = null,
+        ?ServiceProviderAggregateInterface $providers = null,
+        ?InflectorAggregateInterface $inflectors = null
+    ) {
+        parent::__construct($definitions, $providers, $inflectors);
         $this->registerProviders();
-
     }
 
 
-    public static function __callStatic($name, $arguments)
-    {
-        $self = self::getInstance();
-        return call_user_func([$self,$name],$arguments);
-    }
+
 
     protected function registerProviders(){
-
-        $tempProviders = [];
-
-        foreach ($this->providers as $provider){
-            /**
-             * @var IServiceProvider $instance
-             */
-            $instance = new $provider;
-            $instance->register($this);
-            array_push($tempProviders,$instance);
-        }
-
-        foreach ($tempProviders as $provider){
-            $provider->boot($this);
+        foreach ($this->serviceProviders as $provider){
+            $this->addServiceProvider($provider);
         }
     }
 
@@ -71,27 +53,27 @@ class Factory extends Container
      * @return WechatPay
     */
     public static function wechat(array $config){
-        $self = self::getInstance();
+        $instance = new self();
 
         /**
-         * @var WechatPay $wechat
+         * @var WechatPay $wechatInstance
         */
-        $wechat = $self->make(WechatPay::class);
-
-        $wechat->unifiedOrder()->setConfig($config);
-        return $wechat;
+        $wechatInstance = $instance->get('wechat_pay');
+        $wechatInstance->unifiedOrder()->setConfig($config);
+        $wechatInstance->payNotify()->setConfig($config);
+        return $wechatInstance;
     }
 
 
     public static function jd(array $config){
-        $self = self::getInstance();
+        $instance = new self();
 
         /**
          * @var Pay $jd
          */
-        $jd = $self->make('jd');
-
+        $jd = $instance->get('jd_pay');
         $jd->unifiedOrder()->setConfig($config);
+        $jd->payNotify()->setConfig($config);
         return $jd;
     }
 }

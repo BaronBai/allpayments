@@ -11,22 +11,28 @@ namespace Mzt\AllPayments\Providers;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
+use League\Container\ServiceProvider\AbstractServiceProvider;
 use Mzt\AllPayments\Contracts\IHttpClient;
-use Mzt\AllPayments\Contracts\IServiceProvider;
-use Mzt\AllPayments\Factory;
 use Mzt\AllPayments\Http\BaseHttpClient;
 
-class HttpServiceProvider implements IServiceProvider
+class HttpServiceProvider extends AbstractServiceProvider
 {
 
-    public function register(Factory $app)
+    protected $provides = [
+        ClientInterface::class,
+        IHttpClient::class,
+    ];
+
+
+    public function register()
     {
-        $app->bind(ClientInterface::class,Client::class);
-        $app->bind(IHttpClient::class, BaseHttpClient::class);
+        $this->getLeagueContainer()->add(ClientInterface::class, Client::class);
+
+        $this->getLeagueContainer()->add(IHttpClient::class, BaseHttpClient::class)
+            ->addArgument(ClientInterface::class);
+
+
     }
 
-    public function boot(Factory $app)
-    {
-        // TODO: Implement boot() method.
-    }
+
 }
