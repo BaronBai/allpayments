@@ -17,6 +17,7 @@ use Mzt\AllPayments\Contracts\IXml2Array;
 use Mzt\AllPayments\Factory;
 use Mzt\AllPayments\Http\BaseHttpClient;
 use Mzt\AllPayments\PayService\Notifys\PayNotifyByWechat;
+use Mzt\AllPayments\PayService\PayManage;
 use Mzt\AllPayments\PayService\UnifiedOrder\UnifiedOrderByWechat;
 use Mzt\AllPayments\PayService\WechatPay;
 use Mzt\AllPayments\Traits\Md5SignUtil;
@@ -28,6 +29,7 @@ class WechatPayServiceProvider extends AbstractServiceProvider
 
     protected $provides = [
         'wechat_pay',
+        'WechatPay',
         WechatPay::class,
         UnifiedOrderByWechat::class,
         PayNotifyByWechat::class
@@ -65,6 +67,9 @@ class WechatPayServiceProvider extends AbstractServiceProvider
             ->addArgument(UnifiedOrderByWechat::class)
             ->addArgument(PayNotifyByWechat::class)
             ->setAlias('wechat_pay');
+
+
+
 
     }
 }

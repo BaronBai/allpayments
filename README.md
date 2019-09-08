@@ -1,19 +1,23 @@
 # AllPayments
 你没有看错，就是 “所有支付”，我会努力尽早把所有能接的支付都接上来。  
-计划接入
-1. 微信官方 （已接入）
-2. 支付宝官方
-3. 京东 （已接入统一下单）
+*已经接入*
+1. 微信官方  
+    * 统一下单
+2. 支付宝官方  
+    * wap（手机网页支付）
+3. 京东
+    * 统一下单
 4. 扫呗  
 ......
 
 ## Requirement
 1. PHP >= 7.1
 2. Composer 
-3. 暂时没了
+3. openssl
+4. 暂时没了
 
 ## Installation
-`$ composer require mzt/all_payments`
+`$ composer require mzt/all_payments:dev-master`
 
 ## Usage
 基本使用(以微信为例子)  
@@ -22,14 +26,14 @@
 
 use Mzt\AllPayments\Factory;
 
-$wechatPay = Factory::wechat([
+$wechatPay = Factory::wechatPay([
     'appid' => 'your app id',
     'mch_id' => 'your mch id',
     'key' => 'your key'
 ]); 
 
 try{
-    $result = $wechatPay->unifiedOrder()->unify([
+    $result = $wechatPay->unified()->unify([
         'total_fee' => 1,
         'body' => '测试Wap支付',
         'out_trade_no' => 'sdk'.date('YmdHis'),
@@ -47,6 +51,9 @@ try{
 }catch (\Mzt\AllPayments\Exceptions\ValidatorException $e){
     
     // 如果抛出这个异常，那是说明对于微信支付来说必要的字段你可能没传。你得去看一下微信的文档了
+}catch (\Mzt\AllPayments\Exceptions\ClientException $e){
+    
+    // 这里表示请求错了，比如说404,500什么的
 }
 ```
 ## Documentation

@@ -13,13 +13,13 @@ use Mzt\AllPayments\Contracts\ISignUtil;
 use Mzt\AllPayments\Contracts\ITransform;
 use Mzt\AllPayments\Contracts\IUnifiedOrder;
 use Mzt\AllPayments\Contracts\IXml2Array;
-use Mzt\AllPayments\Contracts\PayService\BasePayService;
+use Mzt\AllPayments\Contracts\PayService\BasePay;
 use Mzt\AllPayments\Exceptions\PayException;
 use Mzt\AllPayments\Exceptions\ValidatorException;
 use Mzt\AllPayments\Traits\StringsUtils;
 use Psr\Http\Message\ResponseInterface;
 
-class UnifiedOrderByWechat extends BasePayService implements IUnifiedOrder, ITransform
+class UnifiedOrderByWechat extends BasePay implements IUnifiedOrder, ITransform
 {
 
     use StringsUtils;
@@ -43,19 +43,39 @@ class UnifiedOrderByWechat extends BasePayService implements IUnifiedOrder, ITra
     protected function configRule(): array
     {
         return [
-            'appid' => 'required|string',
-            'mch_id' => 'required|string',
-            'key' => 'required|string'
+            [
+                'appid' => 'required|string',
+                'mch_id' => 'required|string',
+                'key' => 'required|string'
+            ],
+            [
+                'appid.required' => 'appid 参数缺失',
+                'mch_id.required' => 'mch_id 参数缺失',
+                'key.required' => 'key 参数缺失'
+            ]
         ];
     }
 
+    protected function paramsRule(): array
+    {
+        return [
+            'body' => 'required|string',
+            'out_trade_no' => 'required|string',
+            'total_fee' => 'required|integer',
+            'spbill_create_ip' => 'required|string',
+            'notify_url' => 'required|string',
+            'trade_type' => 'required|in:MWEB,JSAPI,APP,NATIVE',
+            'openid' => 'required_if:trade_type,JSAPI|string',
+            'scene_info' => 'required_if:trade_type,MWEB|string'
+        ];
+    }
 
 
     public function unify(array $options): array
     {
 
+        $this->validConfig();
         $this->validParams($options);
-        $this->validConfig($this->getConfig());
 
         $secretParams = $this->extractSecretParams($this->getConfig());
 
@@ -104,24 +124,24 @@ class UnifiedOrderByWechat extends BasePayService implements IUnifiedOrder, ITra
 
 
 
-    protected function validParams(array $params)
-    {
-        $b = \Mzt\AllPayments\Validator::validators($params, [
-            'body' => 'required|string',
-            'out_trade_no' => 'required|string',
-            'total_fee' => 'required|integer',
-            'spbill_create_ip' => 'required|string',
-            'notify_url' => 'required|string',
-            'trade_type' => 'required|in:MWEB,JSAPI,APP,NATIVE',
-            'openid' => 'required_if:trade_type,JSAPI|string',
-            'scene_info' => 'required_if:trade_type,MWEB|string'
-        ], [
-            'scene_info.required_if' => 'h5支付必须要传递scene_info字段',
-            'openid.required_if' => 'js、小程序支付必须要传递openid字段'
-        ]);
-
-        if (!$b) {
-            throw ValidatorException::PayParamsValidationFail(\Mzt\AllPayments\Validator::getMessage());
-        }
-    }
+//    protected function validParams(array $params)
+//    {
+//        $b = \Mzt\AllPayments\Validator::validators($params, [
+//            'body' => 'required|string',
+//            'out_trade_no' => 'required|string',
+//            'total_fee' => 'required|integer',
+//            'spbill_create_ip' => 'required|string',
+//            'notify_url' => 'required|string',
+//            'trade_type' => 'required|in:MWEB,JSAPI,APP,NATIVE',
+//            'openid' => 'required_if:trade_type,JSAPI|string',
+//            'scene_info' => 'required_if:trade_type,MWEB|string'
+//        ], [
+//            'scene_info.required_if' => 'h5支付必须要传递scene_info字段',
+//            'openid.required_if' => 'js、小程序支付必须要传递openid字段'
+//        ]);
+//
+//        if (!$b) {
+//            throw ValidatorException::PayParamsValidationFail(\Mzt\AllPayments\Validator::getMessage());
+//        }
+//    }
 }

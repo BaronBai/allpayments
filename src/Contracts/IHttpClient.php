@@ -17,5 +17,5 @@ interface IHttpClient
 
     public function postXml(string $uri, $body) : ResponseInterface;
 
-    public function postJson(string $uri, $body) : ResponseInterface;
+    public function postJson(string $uri, string $body) : ResponseInterface;
 }

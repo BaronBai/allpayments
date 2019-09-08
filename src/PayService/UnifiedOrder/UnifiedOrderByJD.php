@@ -13,14 +13,12 @@ use Mzt\AllPayments\Contracts\IHttpClient;
 use Mzt\AllPayments\Contracts\ISignUtil;
 use Mzt\AllPayments\Contracts\ITransform;
 use Mzt\AllPayments\Contracts\IUnifiedOrder;
-use Mzt\AllPayments\Contracts\PayService\BasePayService;
+use Mzt\AllPayments\Contracts\PayService\BasePay;
 use Mzt\AllPayments\Exceptions\PayException;
-use Mzt\AllPayments\Exceptions\ValidatorException;
 use Mzt\AllPayments\Utils\TDESUtil;
-use Mzt\AllPayments\Validator;
 use Psr\Http\Message\ResponseInterface;
 
-class UnifiedOrderByJD extends BasePayService implements IUnifiedOrder, ITransform
+class UnifiedOrderByJD extends BasePay implements IUnifiedOrder, ITransform
 {
     const API_URI = "https://apipayx.jd.com/m/unifiedOrder";
 
@@ -49,9 +47,23 @@ class UnifiedOrderByJD extends BasePayService implements IUnifiedOrder, ITransfo
         ];
     }
 
+    protected function paramsRule(): array
+    {
+        return [
+            'amount' => 'required|integer',
+            'outTradeNo' => 'required|string',
+            'outTradeIp' => 'required|string',
+            'productName' => 'required|string',
+            'piType' => 'required|string|in:WX,ALIPAY,JDPAY,UNIPAY',
+            'gatewayPayMethod' => 'required|string|in:MINIPROGRAM,SUBSCRIPTION',
+            'deviceInfo' => 'required|string',
+            'openId' => 'required_unless:piType,JDPAY'
+        ];
+    }
+
     public function unify(array $params): array
     {
-        $this->validConfig($this->getConfig());
+        $this->validConfig();
         $this->validParams($params);
 
         $params = array_merge($params,$this->fixedParams);
@@ -100,22 +112,7 @@ class UnifiedOrderByJD extends BasePayService implements IUnifiedOrder, ITransfo
     }
 
 
-    protected function validParams(array $params){
-        $b = Validator::validators($params,[
-            'amount' => 'required|integer',
-            'outTradeNo' => 'required|string',
-            'outTradeIp' => 'required|string',
-            'productName' => 'required|string',
-            'piType' => 'required|string|in:WX,ALIPAY,JDPAY,UNIPAY',
-            'gatewayPayMethod' => 'required|string|in:MINIPROGRAM,SUBSCRIPTION',
-            'deviceInfo' => 'required|string',
-            'openId' => 'required_unless:piType,JDPAY'
-        ]);
 
-        if (!$b) {
-            throw ValidatorException::PayParamsValidationFail(\Mzt\AllPayments\Validator::getMessage());
-        }
-    }
 
     protected function encryptData(array &$params, $key){
         ksort($params);

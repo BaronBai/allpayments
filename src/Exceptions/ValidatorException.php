@@ -9,7 +9,7 @@
 namespace Mzt\AllPayments\Exceptions;
 
 
-class ValidatorException extends \Exception
+class ValidatorException extends ApplicationException
 {
     const PAY_PARAMS_VALIDATION_FAIL = 30001;
 

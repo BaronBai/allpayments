@@ -11,8 +11,14 @@ namespace Mzt\AllPayments\PayService;
 
 use Mzt\AllPayments\Contracts\IPayNotify;
 use Mzt\AllPayments\Contracts\IUnifiedOrder;
+use Mzt\AllPayments\Contracts\IWapPay;
 use Mzt\AllPayments\Contracts\PayService\BasePayService;
 
+
+/**
+ * Class Pay
+ * @package Mzt\AllPayments\PayService
+ */
 class Pay
 {
     protected $unifiedOrder;

@@ -26,7 +26,10 @@
     "autoload": {
         "psr-4": {
             "Mzt\\AllPayments\\" : "src/"
-        }
+        },
+        "files": [
+            "src/constant.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

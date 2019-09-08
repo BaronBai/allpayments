@@ -13,11 +13,10 @@ use Mzt\AllPayments\Contracts\IPayNotify;
 use Mzt\AllPayments\Contracts\ISignUtil;
 use Mzt\AllPayments\Contracts\IXml2Array;
 use Mzt\AllPayments\Contracts\PayService\BaseNotify;
-use Mzt\AllPayments\Contracts\PayService\BasePayService;
 use Mzt\AllPayments\Exceptions\PayException;
 use Symfony\Component\HttpFoundation\Response;
 
-class PayNotifyByWechat extends BasePayService implements IPayNotify
+class PayNotifyByWechat extends BaseNotify implements IPayNotify
 {
 
     protected $xmlUtil;
@@ -41,7 +40,7 @@ class PayNotifyByWechat extends BasePayService implements IPayNotify
 
     public function notify(string $content, callable $callback): Response
     {
-        $this->validConfig($this->getConfig());
+        $this->validConfig();
         $response = new Response();
         $data = $this->xmlUtil->toArray($content);
 

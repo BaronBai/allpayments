@@ -49,7 +49,7 @@ class Validator extends Factory
      * @param array $customAttributes
      * @return bool
      */
-    public static function validators(array $rules, array $data, array $messages = [], array $customAttributes = [])
+    public static function validators(array $data, array $rules, array $messages = [], array $customAttributes = [])
     {
         if (empty($rules) || empty($data)) {
             self::$message = self::$headers['empty'];

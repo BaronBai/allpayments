@@ -11,7 +11,7 @@ namespace Mzt\AllPayments\Contracts\PayService;
 
 use Mzt\AllPayments\Exceptions\ValidatorException;
 
-abstract class BaseNotify
+abstract class BaseNotify extends BasePayService
 {
 
 }

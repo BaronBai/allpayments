@@ -11,12 +11,12 @@ namespace Mzt\AllPayments\PayService\Notifys;
 
 use Mzt\AllPayments\Contracts\IPayNotify;
 use Mzt\AllPayments\Contracts\ISignUtil;
-use Mzt\AllPayments\Contracts\PayService\BasePayService;
+use Mzt\AllPayments\Contracts\PayService\BaseNotify;
 use Mzt\AllPayments\Exceptions\PayException;
 use Mzt\AllPayments\Utils\TDESUtil;
 use Symfony\Component\HttpFoundation\Response;
 
-class PayNotifyByJD extends BasePayService implements IPayNotify
+class PayNotifyByJD extends BaseNotify implements IPayNotify
 {
 
     protected $signUtil;

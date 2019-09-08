@@ -14,6 +14,7 @@ use Mzt\AllPayments\Contracts\ISignUtil;
 use Mzt\AllPayments\Contracts\IXml2Array;
 use Mzt\AllPayments\Traits\Md5SignUtil;
 use Mzt\AllPayments\Utils\JDSignUtil;
+use Mzt\AllPayments\Utils\Signs\RSA2Sign;
 use Mzt\AllPayments\XmlArray;
 
 class UtilsServiceProvider extends AbstractServiceProvider
@@ -23,7 +24,8 @@ class UtilsServiceProvider extends AbstractServiceProvider
         IXml2Array::class,
         ISignUtil::class,
         Md5SignUtil::class,
-        JDSignUtil::class
+        JDSignUtil::class,
+        RSA2Sign::class
     ];
 
     public function register()
@@ -32,5 +34,6 @@ class UtilsServiceProvider extends AbstractServiceProvider
         $this->getContainer()->add(ISignUtil::class,Md5SignUtil::class);
         $this->getContainer()->add(Md5SignUtil::class);
         $this->getContainer()->add(JDSignUtil::class);
+        $this->getLeagueContainer()->add(RSA2Sign::class);
     }
 }

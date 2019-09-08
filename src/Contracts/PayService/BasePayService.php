@@ -23,7 +23,7 @@ abstract class BasePayService
 
 
     /**
-     * @param array $__config
+     * @param array $__config  1维数组或者二维数组
      */
     public function setConfig(array $__config){
         $this->__config = $__config;
@@ -49,15 +49,18 @@ abstract class BasePayService
 
     /**
      * 验证配置文件是否符合规则
-     * @param array $params
      * @throws ValidatorException
      */
-    protected function validConfig(array $params){
+    protected function validConfig(){
         $rule = static::configRule();
-        $b = \Mzt\AllPayments\Validator::validators($params, $rule);
+        $params = static::getConfig();
 
-        if (!$b) {
-            throw ValidatorException::PayParamsValidationFail(\Mzt\AllPayments\Validator::getMessage());
+        $validatory = (count($rule) === count($rule,1))
+            ? \Mzt\AllPayments\Validator::getInstance()->make($params, $rule)
+            : \Mzt\AllPayments\Validator::getInstance()->make($params, ...$rule);
+
+        if ($validatory->fails()) {
+            throw ValidatorException::PayParamsValidationFail($validatory->errors()->first());
         }
     }
 

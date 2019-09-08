@@ -13,13 +13,24 @@ use League\Container\Container;
 use League\Container\Definition\DefinitionAggregateInterface;
 use League\Container\Inflector\InflectorAggregateInterface;
 use League\Container\ServiceProvider\ServiceProviderAggregateInterface;
+use Mzt\AllPayments\Exceptions\ApplicationException;
 use Mzt\AllPayments\PayService\Pay;
+use Mzt\AllPayments\PayService\PayManage;
 use Mzt\AllPayments\PayService\WechatPay;
+use Mzt\AllPayments\Providers\AliPayServiceProvider;
 use Mzt\AllPayments\Providers\HttpServiceProvider;
 use Mzt\AllPayments\Providers\JDPayServiceProvider;
+use Mzt\AllPayments\Providers\PayManageServiceProvider;
 use Mzt\AllPayments\Providers\UtilsServiceProvider;
 use Mzt\AllPayments\Providers\WechatPayServiceProvider;
+use phpDocumentor\Reflection\Types\Self_;
 
+
+/**
+ * @method PayManage wechatPay(array $config) 微信支付
+ * @method PayManage jdPay(array $config) 京东支付
+ * @method PayManage aliPay(array $config) 支付宝支付
+*/
 class Factory extends Container
 {
 
@@ -27,7 +38,9 @@ class Factory extends Container
         UtilsServiceProvider::class,
         HttpServiceProvider::class,
         WechatPayServiceProvider::class,
-        JDPayServiceProvider::class
+        JDPayServiceProvider::class,
+        AliPayServiceProvider::class,
+        PayManageServiceProvider::class
     ];
 
     public function __construct(
@@ -48,8 +61,34 @@ class Factory extends Container
         }
     }
 
+    public static function __callStatic($name, $arguments)
+    {
+        if (strpos($name,"Pay") === false){
+            throw new ApplicationException("method[{$name}] is not exist !");
+        }
+
+        return self::resolve($name,...$arguments);
+    }
+
+    public static function resolve(string $name, array $config){
+        $instance = new self();
+        /**
+         * @var PayManage $instance
+         */
+        $instance = $instance->get($name);
+        $instance->setConfig($config);
+        return $instance;
+    }
+
+
+
+
+
+
+
     /**
      * 获取微信支付聚合类
+     * @deprecated
      * @return WechatPay
     */
     public static function wechat(array $config){
@@ -64,7 +103,9 @@ class Factory extends Container
         return $wechatInstance;
     }
 
-
+    /**
+     * @deprecated
+    */
     public static function jd(array $config){
         $instance = new self();
 
@@ -76,4 +117,6 @@ class Factory extends Container
         $jd->payNotify()->setConfig($config);
         return $jd;
     }
+
+
 }

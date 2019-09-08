@@ -52,7 +52,7 @@ class BaseHttpClient implements IHttpClient
     }
 
 
-    public function postJson(string $uri, $body): ResponseInterface
+    public function postJson(string $uri, string $body): ResponseInterface
     {
         try {
             $response = $this->client->request('post',$uri,

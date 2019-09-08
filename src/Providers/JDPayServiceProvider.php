@@ -14,6 +14,7 @@ use Mzt\AllPayments\Contracts\IHttpClient;
 use Mzt\AllPayments\Factory;
 use Mzt\AllPayments\PayService\Notifys\PayNotifyByJD;
 use Mzt\AllPayments\PayService\Pay;
+use Mzt\AllPayments\PayService\PayManage;
 use Mzt\AllPayments\PayService\UnifiedOrder\UnifiedOrderByJD;
 use Mzt\AllPayments\Utils\JDSignUtil;
 
@@ -46,5 +47,7 @@ class JDPayServiceProvider extends AbstractServiceProvider
         $this->getLeagueContainer()->add('jd_pay',Pay::class)
             ->addArgument(UnifiedOrderByJD::class)
             ->addArgument(PayNotifyByJD::class);
+
+
     }
 }
