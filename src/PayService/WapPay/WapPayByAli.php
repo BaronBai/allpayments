@@ -80,6 +80,7 @@ class WapPayByAli extends BasePay implements IWapPay
 
         $sign = $this->signUtil->sign($params,$this->config('private_key'));
         $params['sign'] = $sign;
-        return new RedirectResponse(ALI_API_GATEWAY.'?'.http_build_query($params));
+        $response = new RedirectResponse(ALI_API_GATEWAY.'?'.http_build_query($params));
+        return $response;
     }
 }

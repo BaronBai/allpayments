@@ -43,7 +43,7 @@ class PayManageTest extends TestCase
          */
         $pay = (new Factory())->get('wechatPay');
         $this->assertInstanceOf(IUnifiedOrder::class, $pay->unified());
-        $this->assertInstanceOf(IPayNotify::class,$pay->notify());
+        $this->assertInstanceOf(IPayNotify::class,$pay->notifier());
     }
 
 
@@ -53,7 +53,7 @@ class PayManageTest extends TestCase
          */
         $pay = (new Factory())->get('jdPay');
         $this->assertInstanceOf(IUnifiedOrder::class, $pay->unified());
-        $this->assertInstanceOf(IPayNotify::class,$pay->notify());
+        $this->assertInstanceOf(IPayNotify::class,$pay->notifier());
     }
 
     public function testResolveAliPayManage(){
@@ -61,6 +61,6 @@ class PayManageTest extends TestCase
          * @var PayManage $pay;
         */
         $pay = (new Factory())->get('aliPay');
-        $this->assertInstanceOf(IWapPay::class, $pay->wapPay());
+        $this->assertInstanceOf(IWapPay::class, $pay->wap());
     }
 }

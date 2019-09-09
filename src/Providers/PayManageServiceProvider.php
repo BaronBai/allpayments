@@ -30,15 +30,15 @@ class PayManageServiceProvider extends AbstractServiceProvider
     {
         $this->getLeagueContainer()->add("wechatPay", PayManage::class)
             ->addMethodCall("setUnified",[UnifiedOrderByWechat::class])
-            ->addMethodCall("setNotify",[PayNotifyByWechat::class]);
+            ->addMethodCall("setNotifier",[PayNotifyByWechat::class]);
 
 
         $this->getLeagueContainer()->add("jdPay", PayManage::class)
             ->addMethodCall("setUnified",[UnifiedOrderByJD::class])
-            ->addMethodCall("setNotify",[PayNotifyByJD::class]);
+            ->addMethodCall("setNotifier",[PayNotifyByJD::class]);
 
 
         $this->getLeagueContainer()->add("aliPay", PayManage::class)
-            ->addMethodCall("setWapPay",[WapPayByAli::class]);
+            ->addMethodCall("setWap",[WapPayByAli::class]);
     }
 }

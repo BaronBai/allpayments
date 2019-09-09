@@ -19,14 +19,14 @@ use Mzt\AllPayments\Contracts\PayService\BasePayService;
 
 /**
  * @method IUnifiedOrder|BasePay unified() 统一下单
- * @method IPayNotify|BaseNotify notify() 支付回调
- * @method IWapPay|BasePay wapPay() 手机网页支付
+ * @method IPayNotify|BaseNotify notifier() 支付回调
+ * @method IWapPay|BasePay wap() 手机网页支付
 */
 class PayManage
 {
     protected $unified;
-    protected $notify;
-    protected $wapPay;
+    protected $notifier;
+    protected $wap;
 
 
     public function __call($name, $arguments)
@@ -60,18 +60,18 @@ class PayManage
     }
 
     /**
-     * @param IPayNotify $notify
+     * @param IPayNotify $notifier
      */
-    public function setNotify($notify): void
+    public function setNotifier($notifier): void
     {
-        $this->notify = $notify;
+        $this->notifier = $notifier;
     }
 
     /**
-     * @param IWapPay $wapPay
+     * @param IWapPay $wap
      */
-    public function setWapPay($wapPay): void
+    public function setWap($wap): void
     {
-        $this->wapPay = $wapPay;
+        $this->wap = $wap;
     }
 }
